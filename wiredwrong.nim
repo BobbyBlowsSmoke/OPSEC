@@ -34,15 +34,15 @@ proc noPhonesCamerasBiometrics() =
     warn("Remove phones or webcams before proceeding.")
   else:
     info("No phones or webcams detected.")
-  # Optional: disable USB mounts (requires appropriate permissions)
+  # Optional: disable USB mounts (requires root and correct permissions)
   discard execShellCmd("echo 0 > /sys/bus/usb/drivers/usb/bind")
 
 proc stripMetadata(files: seq[string]) =
   info("Stripping metadata...")
   for file in files:
     if file.endsWith(".jpg") or file.endsWith(".png") or file.endsWith(".pdf"):
-      discard execShellCmd("mat2 " & file)
-      discard execShellCmd("exiftool -all= -overwrite_original " & file)
+      discard execShellCmd("mat2 " & quoteShell(file))
+      discard execShellCmd("exiftool -all= -overwrite_original " & quoteShell(file))
       info("Sanitized " & file)
 
 proc runAudit() =
